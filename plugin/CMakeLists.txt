@@ -1,5 +1,5 @@
 set(INSTALL_DIR plugins/restlink)
-set(OUTPUT_DIR ${PROJECT_BINARY_DIR}/${INSTALL_DIR})
+set(OUTPUT_DIR ${CMAKE_PROJECT_BINARY_DIR}/${INSTALL_DIR})
 
 qt_add_plugin(RestLinkSql CLASS_NAME RestLink::Sql::Plugin plugin.cpp)
 
