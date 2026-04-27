@@ -1,26 +1,8 @@
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-qt_add_plugin(RestLinkSql
-    CLASS_NAME RestLink::Sql::Plugin
-    plugin.cpp
-)
-
-set(OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/plugins/restlink)
-
-set_target_properties(RestLinkSql PROPERTIES
-    OUTPUT_NAME restlinksql
-    PREFIX      ""
-    ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}
-    LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}
-    RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}
-)
-
-set(INSTALL_DIR plugins/restlink)
-install(TARGETS RestLinkSql
-    EXPORT RestLinkTargets
-    ARCHIVE DESTINATION ${INSTALL_DIR}
-    LIBRARY DESTINATION ${INSTALL_DIR}
-    RUNTIME DESTINATION ${INSTALL_DIR}
+qt_add_library(
+  RestLinkSqlLib STATIC
+  global.h
+  debug.h debug.cpp
+  api.h api.cpp
 )
 
 set(UTILS_SOURCES
@@ -55,15 +37,14 @@ set(RELATIONS_SOURCES
   relations/relation_base_impl.h relations/relation_base_impl.cpp
 )
 
-qt_add_library(RestLinkSqlLib STATIC
-  global.h
-  debug.h debug.cpp
-  api.h api.cpp
-  ${DATA_SOURCES}
-  ${RELATIONS_SOURCES}
-  ${ROUTING_SOURCES}
-  ${META_SOURCES}
-  ${UTILS_SOURCES}
+target_sources(
+  RestLinkSqlLib
+  PRIVATE
+    ${DATA_SOURCES}
+    ${RELATIONS_SOURCES}
+    ${ROUTING_SOURCES}
+    ${META_SOURCES}
+    ${UTILS_SOURCES}
 )
 
 target_include_directories(RestLinkSqlLib
@@ -71,11 +52,18 @@ target_include_directories(RestLinkSqlLib
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
 
-target_link_libraries(RestLinkSqlLib PUBLIC Qt::Sql RestLink)
+target_link_libraries(
+  RestLinkSqlLib
+  PUBLIC
+    RestLink::RestLink
+    Qt::Core
+    Qt::Sql
+)
 
-target_compile_definitions(RestLinkSqlLib
+target_compile_definitions(
+  RestLinkSqlLib
+  PUBLIC
+    RESTLINK_SQL_VERSION_STR="${PROJECT_VERSION}"
   PRIVATE
     RESTLINK_SQL_BUILD
 )
-
-target_link_libraries(RestLinkSql PRIVATE RestLinkSqlLib)

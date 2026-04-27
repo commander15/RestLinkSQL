@@ -21,7 +21,7 @@ public:
         : RestLink::Plugin(parent) {}
 
     QString version() const override {
-        return QStringLiteral(RESTLINK_VERSION_STR);
+        return QStringLiteral(RESTLINK_SQL_VERSION_STR);
     }
 
     QStringList supportedSchemes() const override {
