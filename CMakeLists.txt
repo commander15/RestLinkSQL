@@ -24,15 +24,17 @@ find_package(Qt6 REQUIRED COMPONENTS ${QT_MODULES})
 
 # RestLink
 
-option(RESTLINK_BUILD_CLI   OFF)
-option(RESTLINK_BUILD_QML   OFF)
-option(RESTLINK_BUILD_SQL   OFF)
-option(RESTLINK_BUILD_EXCEL OFF)
+if (PROJECT_IS_TOP_LEVEL)
+    option(RESTLINK_BUILD_CLI     OFF)
+    option(RESTLINK_BUILD_QML     OFF)
+    option(RESTLINK_SUPPORT_SQL   OFF)
+    option(RESTLINK_SUPPORT_EXCEL OFF)
 
-if (TARGET RestLink)
+    find_package(RestLink 2.3.0 REQUIRED)
+elseif (TARGET RestLink)
     add_library(RestLink::RestLink ALIAS RestLink)
 else()
-    find_package(RestLink 2.3.0 REQUIRED)
+    message(FATAL_ERROR "Can't find RestLink core library")
 endif()
 
 add_subdirectory(src)
