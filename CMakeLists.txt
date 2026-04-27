@@ -13,11 +13,12 @@ if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_AUTORCC ON)
 
     set(QT_MODULES Core Network Sql)
-    if (RESTLINK_SQL_BUILD_TESTS)
-        list(APPEND QT_MODULES Test)
-    endif()
 else()
     set(QT_MODULES Sql)
+endif()
+
+if (RESTLINK_SQL_BUILD_TESTS)
+    list(APPEND QT_MODULES Test)
 endif()
 
 find_package(Qt6 REQUIRED COMPONENTS ${QT_MODULES})
