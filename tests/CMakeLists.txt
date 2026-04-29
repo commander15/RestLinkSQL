@@ -1,21 +1,31 @@
-include(FetchContent)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-FetchContent_Declare(
-    GTest
-    GIT_REPOSITORY "https://github.com/google/googletest.git"
-    GIT_TAG "v1.14.0"
-    FIND_PACKAGE_ARGS NAMES GTest 1.14.0
+restlink_add_test(
+    RestLinkSqlTest
+    common/main.cpp
+    common/sqllog.h common/sqllog.cpp
+    common/sqltest.h common/sqltest.cpp
+    common/relationtest.h common/relationtest.cpp
+    queryrunnertest.h queryrunnertest.cpp
+    metadatatest.h metadatatest.cpp
+    modeltest.h modeltest.cpp
+    hasonerelationtest.h hasonerelationtest.cpp
+    belongstoonerelationtest.h belongstoonerelationtest.cpp
+    hasmanyrelationtest.h hasmanyrelationtest.cpp
+    belongstomanytest.h belongstomanytest.cpp
 )
 
-FetchContent_MakeAvailable(GTest)
-if (NOT TARGET GTest::gtest)
-    add_library(GTest::gtest ALIAS gtest)
-endif()
+target_link_libraries(RestLinkSqlTest PRIVATE RestLinkSqlLib)
 
-add_library(RestLinkCoreTest STATIC main.cpp)
-target_compile_definitions(RestLinkCoreTest INTERFACE DATA_DIR="${PROJECT_SOURCE_DIR}/testdata")
-target_link_libraries(RestLinkCoreTest PUBLIC GTest::gtest Qt::Core INTERFACE Qt::Test RestLink::RestLink)
-link_libraries(RestLinkCoreTest)
+file(COPY ${PROJECT_SOURCE_DIR}/testdata/ DESTINATION ${PROJECT_BINARY_DIR}/testdata)
+set(DATABASE_DIR  "${PROJECT_BINARY_DIR}/testdata")
+set(DATABASE_FILE "database_%1.sqlite")
 
-# add_subdirectory(core)
-add_subdirectory(sql)
+ set(DATABASE_URL "sqlite:memory/%1")
+# set(DATABASE_URL "sqlite://${DATABASE_DIR}/${DATABASE_FILE}")
+
+target_compile_definitions(RestLinkSqlTest PRIVATE
+    DB_URL="${DATABASE_URL}"
+    DB_DIR="${DATABASE_DIR}"
+    DATA_DIR="${DATABASE_DIR}"
+)
