@@ -56,7 +56,6 @@ target_link_libraries(
   RestLinkSqlLib
   PUBLIC
     RestLink::RestLink
-    Qt::Core
     Qt::Sql
 )
 
@@ -64,6 +63,4 @@ target_compile_definitions(
   RestLinkSqlLib
   PUBLIC
     RESTLINK_SQL_VERSION_STR="${PROJECT_VERSION}"
-  PRIVATE
-    RESTLINK_SQL_BUILD
 )
